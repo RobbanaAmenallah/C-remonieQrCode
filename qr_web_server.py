@@ -12,7 +12,6 @@ HTML_TEMPLATE = """
     <meta charset="UTF-8">
     <title>Contrôle QR - Cérémonie de remise des diplômes ESSECT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -100,7 +99,8 @@ def scan():
         )
 
     try:
-        df = pd.read_csv(DB_FILE)
+        # ✅ Lecture du fichier avec encodage compatible
+        df = pd.read_csv(DB_FILE, encoding='latin1')
     except Exception as e:
         return render_template_string(
             HTML_TEMPLATE,
@@ -138,7 +138,7 @@ def scan():
     else:
         scans += 1
         df.loc[df['uuid'] == code, 'scan_count'] = scans
-        df.to_csv(DB_FILE, index=False)
+        df.to_csv(DB_FILE, index=False, encoding='latin1')  # 👈 encodage cohérent
         return render_template_string(
             HTML_TEMPLATE,
             message=f"✅ Bienvenue {prenom} {nom}",
