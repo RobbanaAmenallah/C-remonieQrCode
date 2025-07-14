@@ -99,8 +99,8 @@ def scan():
         )
 
     try:
-        # ✅ Lecture du fichier avec encodage compatible
-        df = pd.read_csv(DB_FILE, encoding='latin1')
+        # Lecture du fichier CSV avec gestion d'erreurs d'encodage
+        df = pd.read_csv(DB_FILE, encoding='utf-8', errors='replace')
     except Exception as e:
         return render_template_string(
             HTML_TEMPLATE,
@@ -138,7 +138,8 @@ def scan():
     else:
         scans += 1
         df.loc[df['uuid'] == code, 'scan_count'] = scans
-        df.to_csv(DB_FILE, index=False, encoding='latin1')  # 👈 encodage cohérent
+        # Sauvegarde avec gestion d'erreurs d'encodage
+        df.to_csv(DB_FILE, index=False, encoding='utf-8', errors='replace')
         return render_template_string(
             HTML_TEMPLATE,
             message=f"✅ Bienvenue {prenom} {nom}",
