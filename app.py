@@ -12,7 +12,6 @@ HTML_TEMPLATE = """
     <meta charset="UTF-8">
     <title>Contrôle QR - Cérémonie de remise des diplômes ESSECT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -100,7 +99,8 @@ def scan():
         )
 
     try:
-        df = pd.read_csv(DB_FILE)
+        # Lecture du fichier CSV avec gestion d'erreurs d'encodage
+        df = pd.read_csv(DB_FILE, encoding='utf-8', errors='replace')
     except Exception as e:
         return render_template_string(
             HTML_TEMPLATE,
@@ -138,7 +138,8 @@ def scan():
     else:
         scans += 1
         df.loc[df['uuid'] == code, 'scan_count'] = scans
-        df.to_csv(DB_FILE, index=False)
+        # Sauvegarde avec gestion d'erreurs d'encodage
+        df.to_csv(DB_FILE, index=False, encoding='utf-8', errors='replace')
         return render_template_string(
             HTML_TEMPLATE,
             message=f"✅ Bienvenue {prenom} {nom}",
@@ -215,4 +216,4 @@ def home():
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port)
